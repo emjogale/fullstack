@@ -15,6 +15,28 @@ const Button = (props) => {
 	);
 };
 
+const Statistics = (props) => {
+	if (!props.total) {
+		return <div>No feedback given</div>;
+	}
+	return (
+		<div>
+			<Statistic text="good" score={props.good} />
+			<Statistic text="neutral" score={props.neutral} />
+			<Statistic text="bad" score={props.bad} />
+			<Statistic text="all" score={props.total} />
+			<Statistic
+				text="average"
+				score={(props.good - props.bad) / props.total || 0}
+			/>
+			<Statistic
+				text="positive"
+				score={(props.good / props.total) * 100 || 0}
+			/>
+		</div>
+	);
+};
+
 const Statistic = (props) => {
 	return (
 		<div>
@@ -40,13 +62,7 @@ const App = () => {
 			<Button text="bad" handleClick={setBad} value={bad} />
 
 			<Heading text="statistics" />
-
-			<Statistic text="good" score={good} />
-			<Statistic text="neutral" score={neutral} />
-			<Statistic text="bad" score={bad} />
-			<Statistic text="all" score={total} />
-			<Statistic text="average" score={(good - bad) / total || 0} />
-			<Statistic text="positive" score={(good / total) * 100} />
+			<Statistics good={good} neutral={neutral} bad={bad} total={total} />
 		</div>
 	);
 };
