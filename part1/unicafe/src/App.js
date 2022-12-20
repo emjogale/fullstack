@@ -21,15 +21,15 @@ const Statistics = (props) => {
 	}
 	return (
 		<div>
-			<Statistic text="good" score={props.good} />
-			<Statistic text="neutral" score={props.neutral} />
-			<Statistic text="bad" score={props.bad} />
-			<Statistic text="all" score={props.total} />
-			<Statistic
+			<StatisticLine text="good" score={props.good} />
+			<StatisticLine text="neutral" score={props.neutral} />
+			<StatisticLine text="bad" score={props.bad} />
+			<StatisticLine text="all" score={props.total} />
+			<StatisticLine
 				text="average"
 				score={(props.good - props.bad) / props.total || 0}
 			/>
-			<Statistic
+			<StatisticLine
 				text="positive"
 				score={(props.good / props.total) * 100 || 0}
 			/>
@@ -37,7 +37,7 @@ const Statistics = (props) => {
 	);
 };
 
-const Statistic = (props) => {
+const StatisticLine = (props) => {
 	return (
 		<div>
 			{props.text} {props.score}
