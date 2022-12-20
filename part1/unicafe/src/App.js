@@ -1,8 +1,6 @@
 import { useState } from "react";
 
-const setToValue = (func, newValue) => () => {
-	func(newValue);
-};
+const setToValue = (func, newValue) => () => func(newValue);
 
 const Heading = ({ text }) => {
 	return <h2>{text}</h2>;
@@ -30,6 +28,9 @@ const App = () => {
 	const [neutral, setNeutral] = useState(0);
 	const [bad, setBad] = useState(0);
 
+	const total = good + neutral + bad;
+	console.log(total);
+
 	return (
 		<div>
 			<Heading text="give feedback" />
@@ -43,6 +44,9 @@ const App = () => {
 			<Statistic text="good" score={good} />
 			<Statistic text="neutral" score={neutral} />
 			<Statistic text="bad" score={bad} />
+			<Statistic text="all" score={total} />
+			<Statistic text="average" score={(good - bad) / total || 0} />
+			<Statistic text="positive" score={(good / total) * 100} />
 		</div>
 	);
 };
