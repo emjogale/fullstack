@@ -20,28 +20,31 @@ const Statistics = (props) => {
 		return <div>No feedback given</div>;
 	}
 	return (
-		<div>
-			<StatisticLine text="good" score={props.good} />
-			<StatisticLine text="neutral" score={props.neutral} />
-			<StatisticLine text="bad" score={props.bad} />
-			<StatisticLine text="all" score={props.total} />
-			<StatisticLine
-				text="average"
-				score={(props.good - props.bad) / props.total || 0}
-			/>
-			<StatisticLine
-				text="positive"
-				score={(props.good / props.total) * 100 || 0}
-			/>
-		</div>
+		<table>
+			<tbody>
+				<StatisticLine text="good" score={props.good} />
+				<StatisticLine text="neutral" score={props.neutral} />
+				<StatisticLine text="bad" score={props.bad} />
+				<StatisticLine text="all" score={props.total} />
+				<StatisticLine
+					text="average"
+					score={(props.good - props.bad) / props.total || 0}
+				/>
+				<StatisticLine
+					text="positive"
+					score={((props.good / props.total) * 100 || 0) + " %"}
+				/>
+			</tbody>
+		</table>
 	);
 };
 
 const StatisticLine = (props) => {
 	return (
-		<div>
-			{props.text} {props.score}
-		</div>
+		<tr>
+			<td>{props.text} </td>
+			<td>{props.score}</td>
+		</tr>
 	);
 };
 
