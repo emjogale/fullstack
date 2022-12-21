@@ -1,5 +1,9 @@
 import { useState } from "react";
 
+const Heading = ({ text }) => {
+	return <h2>{text}</h2>;
+};
+
 const Anecdote = (props) => {
 	return (
 		<div>
@@ -35,6 +39,9 @@ const App = () => {
 		setSelected(rand);
 	};
 
+	const top = Math.max(...points);
+	const topAnecdote = anecdotes[points.indexOf(top)];
+
 	const vote = () => {
 		const pointsCopy = [...points];
 		pointsCopy[selected] += 1;
@@ -43,10 +50,14 @@ const App = () => {
 
 	return (
 		<div>
+			<Heading text="Anecdote of the day" />
 			<Anecdote anecdote={anecdotes[selected]} points={points[selected]} />
 
 			<Button handleClick={vote} text="vote" />
 			<Button handleClick={setAnecdote} text="next anecdote" />
+
+			<Heading text="Anecdote with most votes" />
+			<Anecdote anecdote={topAnecdote} points={points[selected]} />
 		</div>
 	);
 };
