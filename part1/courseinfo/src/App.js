@@ -1,15 +1,14 @@
 const Course = ({ course }) => {
+	console.log(course.parts);
 	return (
 		<div>
 			<Header course={course.name} />
 			<Content parts={course.parts} />
-			{/* <Total
-				sum={
-					course.parts[0].exercises +
-					course.parts[1].exercises +
-					course.parts[2].exercises
-				}
-			/> */}
+			<Total
+				sum={course.parts
+					.map((part) => part.exercises)
+					.reduce((accum, curr) => (accum += curr), 0)}
+			/>
 		</div>
 	);
 };
@@ -30,7 +29,7 @@ const Part = ({ part }) => (
 	</p>
 );
 
-const Total = ({ sum }) => <p>Number of exercises {sum}</p>;
+const Total = ({ sum }) => <h3>total of {sum} exercises</h3>;
 
 const App = () => {
 	const course = {
