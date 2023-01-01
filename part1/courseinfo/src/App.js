@@ -1,43 +1,8 @@
+import Course from "./components/Course";
+
 const Curriculum = ({ curriculum }) => {
 	return <h1>{curriculum}</h1>;
 };
-const Course = ({ courses }) => {
-	console.log(courses);
-
-	return (
-		<div>
-			{courses.map((course) => (
-				<div>
-					<Header key={course.id} course={course.name} />
-					<Content key={course.parts.id} parts={course.parts} />
-					<Total parts={course.parts} />
-				</div>
-			))}
-		</div>
-	);
-};
-
-const Header = ({ course }) => <h2>{course}</h2>;
-
-const Content = ({ parts }) => (
-	<div>
-		{parts.map((part) => (
-			<Part key={part.id} part={part} />
-		))}
-	</div>
-);
-
-const Part = ({ part }) => (
-	<p>
-		{part.name} {part.exercises}
-	</p>
-);
-
-const Total = ({ parts }) => (
-	<h3>
-		total of {parts.reduce((sum, part) => (sum += part.exercises), 0)} exercises
-	</h3>
-);
 
 const App = () => {
 	const curriculum = "Web development curriculum";

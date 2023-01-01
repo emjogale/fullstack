@@ -54,7 +54,6 @@ const App = () => {
 	const [bad, setBad] = useState(0);
 
 	const total = good + neutral + bad;
-	console.log(total);
 
 	return (
 		<div>
