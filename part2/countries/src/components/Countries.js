@@ -1,9 +1,9 @@
+import React from "react";
 import Country from "./Country";
 
-const Countries = ({ countries, filter }) => {
+const Countries = ({ countries, filter, setFilter }) => {
 	let names = countries.map((country) => country.name);
 	let list = names.map((x) => x.common);
-
 	let filteredList = list.filter((country) =>
 		new RegExp(filter, "i").test(country)
 	);
@@ -22,7 +22,12 @@ const Countries = ({ countries, filter }) => {
 		return (
 			<div>
 				{filteredList.map((country) => (
-					<div key={country}>{country}</div>
+					<div key={country}>
+						{country}
+						<button value={country} onClick={(e) => setFilter(e.target.value)}>
+							show
+						</button>
+					</div>
 				))}
 			</div>
 		);
@@ -30,3 +35,5 @@ const Countries = ({ countries, filter }) => {
 };
 
 export default Countries;
+
+// TODO: work out the onClick function of the button which then shows the details of that specific country
