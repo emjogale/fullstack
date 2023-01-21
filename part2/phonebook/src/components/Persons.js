@@ -1,6 +1,6 @@
 import Person from "./Person";
 
-const Persons = ({ persons, filter }) => {
+const Persons = ({ persons, filter, handleDelete }) => {
 	let list = persons;
 	if (filter) {
 		list = persons.filter((person) =>
@@ -10,7 +10,11 @@ const Persons = ({ persons, filter }) => {
 	return (
 		<div>
 			{list.map((person) => (
-				<Person key={person.name} person={person} />
+				<Person
+					key={person.name}
+					person={person}
+					handleDelete={() => handleDelete(person)}
+				/>
 			))}
 		</div>
 	);
