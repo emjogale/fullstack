@@ -24,7 +24,6 @@ const App = () => {
 		event.preventDefault();
 		const personObject = {
 			name: newName,
-
 			number: newNumber,
 		};
 
@@ -52,7 +51,6 @@ const App = () => {
 	const handleDeleteOf = (person) => {
 		const yes = window.confirm(`Delete ${person.name} ?`);
 		if (yes) {
-			console.log("here we go with deleting");
 			personService
 				.deleteItem(person.id)
 				.then(setPersons(persons.filter((p) => p.id !== person.id)));
