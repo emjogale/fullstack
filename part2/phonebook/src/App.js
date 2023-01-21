@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import personService from "./services/persons";
 
 import Persons from "./components/Persons";
 import Filter from "./components/Filter";
@@ -19,19 +20,19 @@ const App = () => {
 
 	useEffect(hook, []);
 
-	console.log("render", persons.length, "persons");
-
 	const addPerson = (event) => {
 		event.preventDefault();
 		const personObject = {
 			name: newName,
-			id: newName,
+
 			number: newNumber,
 		};
 
 		persons.map((person) => person.name).includes(newName)
 			? alert(`${newName} already in phonebook`)
-			: setPersons(persons.concat(personObject));
+			: personService.create(personObject).then((response) => {
+					setPersons(persons.concat(response.data));
+			  });
 		setNewName("");
 		setNewNumber("");
 	};
