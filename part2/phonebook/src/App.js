@@ -13,8 +13,8 @@ const App = () => {
 	const [filter, setFilter] = useState("");
 
 	const hook = () => {
-		axios.get("http://localhost:3001/persons").then((response) => {
-			setPersons(response.data);
+		personService.getAll().then((initialPeople) => {
+			setPersons(initialPeople);
 		});
 	};
 
@@ -30,7 +30,7 @@ const App = () => {
 		persons.map((person) => person.name).includes(newName)
 			? alert(`${newName} already in phonebook`)
 			: personService.create(personObject).then((response) => {
-					setPersons(persons.concat(response.data));
+					setPersons(persons.concat(response));
 			  });
 		setNewName("");
 		setNewNumber("");
