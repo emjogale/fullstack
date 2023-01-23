@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import personService from "./services/persons";
 
 import Persons from "./components/Persons";
@@ -27,13 +26,32 @@ const App = () => {
 			number: newNumber,
 		};
 
-		persons.map((person) => person.name).includes(newName)
-			? alert(`${newName} already in phonebook`)
-			: personService.create(personObject).then((response) => {
-					setPersons(persons.concat(response));
-			  });
-		setNewName("");
-		setNewNumber("");
+		if (persons.map((person) => person.name).includes(newName)) {
+			const samePerson = persons.find((person) => person.name === newName);
+			const yes = window.confirm(
+				`${newName} is already added to phonebook, replace the old number with a new one?`
+			);
+			if (yes) {
+				const changedPerson = { ...samePerson, number: newNumber };
+				personService
+					.update(samePerson.id, changedPerson)
+					.then((returnedPerson) => {
+						setPersons(
+							persons.map((person) =>
+								person.name !== newName ? person : returnedPerson
+							)
+						);
+					});
+				setNewName("");
+				setNewNumber("");
+			}
+		} else {
+			personService.create(personObject).then((response) => {
+				setPersons(persons.concat(response));
+			});
+			setNewName("");
+			setNewNumber("");
+		}
 	};
 
 	const handleNameChange = (event) => {
