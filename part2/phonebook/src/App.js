@@ -4,12 +4,14 @@ import personService from "./services/persons";
 import Persons from "./components/Persons";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
+import Notification from "./components/Notification";
 
 const App = () => {
 	const [persons, setPersons] = useState([]);
 	const [newName, setNewName] = useState("");
 	const [newNumber, setNewNumber] = useState("");
 	const [filter, setFilter] = useState("");
+	const [notificationMessage, setNotificationMessage] = useState(null);
 
 	const hook = () => {
 		personService.getAll().then((initialPeople) => {
@@ -18,6 +20,14 @@ const App = () => {
 	};
 
 	useEffect(hook, []);
+
+	// TODO : refactor to extract notofication function to avoid repetition?
+
+	const removeNotification = () => {
+		setTimeout(() => {
+			setNotificationMessage(null);
+		}, 5000);
+	};
 
 	const addPerson = (event) => {
 		event.preventDefault();
@@ -42,6 +52,8 @@ const App = () => {
 							)
 						);
 					});
+				setNotificationMessage(`Updated number for ${newName}`);
+				removeNotification();
 				setNewName("");
 				setNewNumber("");
 			}
@@ -49,6 +61,8 @@ const App = () => {
 			personService.create(personObject).then((response) => {
 				setPersons(persons.concat(response));
 			});
+			setNotificationMessage(`Added ${newName}`);
+			removeNotification();
 			setNewName("");
 			setNewNumber("");
 		}
@@ -71,13 +85,20 @@ const App = () => {
 		if (yes) {
 			personService
 				.deleteItem(person.id)
-				.then(setPersons(persons.filter((p) => p.id !== person.id)));
+				.then(setPersons(persons.filter((p) => p.id !== person.id)))
+				.catch((error) => {
+					setNotificationMessage(
+						`the note '${person.name}' was already deleted from server`
+					);
+				});
 		}
 	};
 
 	return (
 		<div>
 			<h2>Phonebook</h2>
+
+			<Notification message={notificationMessage} />
 
 			<Filter onChange={handleFilterChange} filter={filter} />
 
