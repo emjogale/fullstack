@@ -86,9 +86,9 @@ const App = () => {
 			personService
 				.deleteItem(person.id)
 				.then(setPersons(persons.filter((p) => p.id !== person.id)))
-				.catch((error) => {
+				.catch(() => {
 					setNotificationMessage(
-						`the note '${person.name}' was already deleted from server`
+						`'${person.name}' was already deleted from server`
 					);
 				});
 		}
