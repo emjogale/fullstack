@@ -88,7 +88,7 @@ const App = () => {
 				.then(setPersons(persons.filter((p) => p.id !== person.id)))
 				.catch(() => {
 					setNotificationMessage(
-						`'${person.name}' was already deleted from server`
+						`'${person.name}' has already been deleted from the server`
 					);
 				});
 		}
