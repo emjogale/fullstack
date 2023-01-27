@@ -12,6 +12,7 @@ const App = () => {
 	const [newNumber, setNewNumber] = useState("");
 	const [filter, setFilter] = useState("");
 	const [notificationMessage, setNotificationMessage] = useState(null);
+	const [status, setStatus] = useState(null);
 
 	const hook = () => {
 		personService.getAll().then((initialPeople) => {
@@ -21,12 +22,16 @@ const App = () => {
 
 	useEffect(hook, []);
 
-	// TODO : refactor to extract notofication function to avoid repetition?
+	const handleNameChange = (event) => {
+		setNewName(event.target.value);
+	};
 
-	const removeNotification = () => {
-		setTimeout(() => {
-			setNotificationMessage(null);
-		}, 5000);
+	const handleNumberChange = (event) => {
+		setNewNumber(event.target.value);
+	};
+
+	const handleFilterChange = (event) => {
+		setFilter(event.target.value);
 	};
 
 	const addPerson = (event) => {
@@ -53,7 +58,11 @@ const App = () => {
 						);
 					});
 				setNotificationMessage(`Updated number for ${newName}`);
-				removeNotification();
+				setStatus("success");
+				setTimeout(() => {
+					setNotificationMessage(null);
+					setStatus(null);
+				}, 3000);
 				setNewName("");
 				setNewNumber("");
 			}
@@ -61,24 +70,18 @@ const App = () => {
 			personService.create(personObject).then((response) => {
 				setPersons(persons.concat(response));
 			});
-			setNotificationMessage(`Added ${newName}`);
-			removeNotification();
 			setNewName("");
 			setNewNumber("");
+			setStatus("success");
+			setNotificationMessage(`Added ${newName}`);
+			setTimeout(() => {
+				setNotificationMessage(null);
+				setStatus(null);
+			}, 3000);
 		}
 	};
 
-	const handleNameChange = (event) => {
-		setNewName(event.target.value);
-	};
-
-	const handleNumberChange = (event) => {
-		setNewNumber(event.target.value);
-	};
-
-	const handleFilterChange = (event) => {
-		setFilter(event.target.value);
-	};
+	// TODO add in success message for deleting someone
 
 	const handleDeleteOf = (person) => {
 		const yes = window.confirm(`Delete ${person.name} ?`);
@@ -86,10 +89,15 @@ const App = () => {
 			personService
 				.deleteItem(person.id)
 				.then(setPersons(persons.filter((p) => p.id !== person.id)))
-				.catch(() => {
+				.catch((error) => {
 					setNotificationMessage(
-						`'${person.name}' has already been deleted from the server`
+						`'${person.name}' was already removed from server`
 					);
+					setStatus("error");
+					setTimeout(() => {
+						setNotificationMessage(null);
+						setStatus(null);
+					}, 3000);
 				});
 		}
 	};
@@ -98,7 +106,7 @@ const App = () => {
 		<div>
 			<h2>Phonebook</h2>
 
-			<Notification message={notificationMessage} />
+			<Notification message={notificationMessage} status={status} />
 
 			<Filter onChange={handleFilterChange} filter={filter} />
 
