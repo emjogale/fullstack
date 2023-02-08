@@ -24,12 +24,15 @@ let persons = [
 	},
 ];
 
-app.get("/", (request, response) => {
-	response.send("<h1>Hello World!</h1>");
-});
-
 app.get("/api/persons", (request, response) => {
 	response.json(persons);
+});
+
+app.get("/api/info", (request, response) => {
+	const date = new Date(Date.now());
+	response.send(
+		`<p>Phonebook has info for ${persons.length} people</p> <p>${date}<p>`
+	);
 });
 
 app.get("/api/persons/:id", (request, response) => {
@@ -45,5 +48,5 @@ app.get("/api/persons/:id", (request, response) => {
 
 const PORT = 3001;
 app.listen(PORT, () => {
-	console.log(`Server running on port  ${PORT}`);
+	console.log(`Server running on port ${PORT}`);
 });
