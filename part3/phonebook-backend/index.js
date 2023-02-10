@@ -32,6 +32,7 @@ const generateId = () => {
 
 app.get("/api/persons", (request, response) => {
 	response.json(persons);
+	console.log(persons.map((p) => p.name));
 });
 
 app.get("/api/info", (request, response) => {
@@ -62,15 +63,19 @@ app.post("/api/persons", (request, response) => {
 	const body = request.body;
 	if (!body.name) {
 		return response.status(400).json({ error: "name missing" });
+	} else if (!body.number) {
+		return response.status(400).json({ error: "number missing" });
+	} else if (
+		persons.find((p) => p.name.toLowerCase() === body.name.toLowerCase())
+	) {
+		return response.status(400).json({ error: "name must be unique" });
 	}
-
 	const person = {
 		id: generateId(),
 		name: body.name,
 		number: body.number,
 	};
 
-	console.log(person);
 	persons = persons.concat(person);
 	response.json(person);
 });
