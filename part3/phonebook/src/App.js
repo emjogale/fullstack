@@ -81,8 +81,6 @@ const App = () => {
 		}
 	};
 
-	// TODO add in success message for deleting someone
-
 	const handleDeleteOf = (person) => {
 		const yes = window.confirm(`Delete ${person.name} ?`);
 		if (yes) {

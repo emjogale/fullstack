@@ -23,10 +23,6 @@ app.use(
 app.use(express.json());
 app.use(express.static("build"));
 
-const unknownEndpoint = (request, response) => {
-	response.status(404).send({ error: "unknown endpoint" });
-};
-
 morgan.token("json", function (req, res) {
 	return JSON.stringify(req.body);
 });
@@ -93,6 +89,24 @@ app.post("/api/persons", (request, response) => {
 	});
 });
 
+// if a person exists already and need to update number
+app.put("/api/persons/:id", (req, res, next) => {
+	const body = req.body;
+	const person = {
+		name: body.name,
+		number: body.number,
+	};
+
+	Person.findByIdAndUpdate(req.params.id, person, { new: true })
+		.then((updatedPerson) => {
+			res.json(updatedPerson);
+		})
+		.catch((error) => next(error));
+});
+
+const unknownEndpoint = (request, response) => {
+	response.status(404).send({ error: "unknown endpoint" });
+};
 // handler for requests with unknown endpoint
 app.use(unknownEndpoint);
 
