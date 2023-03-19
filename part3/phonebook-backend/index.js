@@ -39,12 +39,20 @@ app.get("/api/persons", (request, response) => {
 	});
 });
 
-app.get("/api/info", (request, response) => {
+// TODO update the info route
+app.get("/api/info", (request, response, next) => {
 	const date = new Date(Date.now());
-	response.send(
-		`<p>Phonebook has info for ${persons.length} people</p> <p>${date}<p>`
-	);
+	Person.find({})
+		.then((persons) => {
+			response.send(
+				`<p>Phonebook has info for ${persons.length}
+			people</p> <p>${date}<p>`
+			);
+		})
+		.catch((error) => next(error));
 });
+
+// TODO and this route
 
 app.get("/api/persons/:id", (request, response, next) => {
 	Person.findById(request.params.id)
