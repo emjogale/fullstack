@@ -39,7 +39,6 @@ app.get("/api/persons", (request, response) => {
 	});
 });
 
-// TODO update the info route
 app.get("/api/info", (request, response, next) => {
 	const date = new Date(Date.now());
 	Person.find({})
@@ -51,8 +50,6 @@ app.get("/api/info", (request, response, next) => {
 		})
 		.catch((error) => next(error));
 });
-
-// TODO and this route
 
 app.get("/api/persons/:id", (request, response, next) => {
 	Person.findById(request.params.id)
@@ -74,14 +71,10 @@ app.delete("/api/persons/:id", (request, response, next) => {
 		.catch((error) => next(error));
 });
 
-app.post("/api/persons", (request, response) => {
+app.post("/api/persons", (request, response, next) => {
 	const body = request.body;
 
-	if (!body.name) {
-		return response.status(400).json({
-			error: "name missing",
-		});
-	} else if (!body.number) {
+	if (!body.number) {
 		return response.status(400).json({
 			error: "number missing",
 		});
@@ -92,9 +85,12 @@ app.post("/api/persons", (request, response) => {
 		number: body.number,
 	});
 
-	person.save().then((savedPerson) => {
-		response.json(savedPerson);
-	});
+	person
+		.save()
+		.then((savedPerson) => {
+			response.json(savedPerson);
+		})
+		.catch((error) => next(error));
 });
 
 // if a person exists already and need to update number
@@ -124,6 +120,8 @@ const errorHandler = (error, request, response, next) => {
 		return response.status(400).send({
 			error: "malformatted id",
 		});
+	} else if (error.name === "ValidationError") {
+		return response.status(400).json({ error: error.message });
 	}
 	next(error);
 };

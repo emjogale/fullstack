@@ -67,9 +67,15 @@ const App = () => {
 				setNewNumber("");
 			}
 		} else {
-			personService.create(personObject).then((response) => {
-				setPersons(persons.concat(response));
-			});
+			personService
+				.create(personObject)
+				.then((response) => {
+					setPersons(persons.concat(response));
+				})
+				.catch((error) => {
+					console.log(error.response.data.error);
+					setNotificationMessage(error.response.data.error);
+				});
 			setNewName("");
 			setNewNumber("");
 			setStatus("success");
