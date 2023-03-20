@@ -56,6 +56,10 @@ const App = () => {
 								person.name !== newName ? person : returnedPerson
 							)
 						);
+					})
+					.catch((error) => {
+						console.log(error.response.data.error);
+						setNotificationMessage(error.response.data.error);
 					});
 				setNotificationMessage(`Updated number for ${newName}`);
 				setStatus("success");

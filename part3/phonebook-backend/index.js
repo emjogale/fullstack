@@ -74,12 +74,6 @@ app.delete("/api/persons/:id", (request, response, next) => {
 app.post("/api/persons", (request, response, next) => {
 	const body = request.body;
 
-	if (!body.number) {
-		return response.status(400).json({
-			error: "number missing",
-		});
-	}
-
 	const person = new Person({
 		name: body.name,
 		number: body.number,
@@ -93,15 +87,14 @@ app.post("/api/persons", (request, response, next) => {
 		.catch((error) => next(error));
 });
 
-// if a person exists already and need to update number
 app.put("/api/persons/:id", (req, res, next) => {
-	const body = req.body;
-	const person = {
-		name: body.name,
-		number: body.number,
-	};
+	const { name, number } = req.body;
 
-	Person.findByIdAndUpdate(req.params.id, person, { new: true })
+	Person.findByIdAndUpdate(
+		req.params.id,
+		{ name, number },
+		{ new: true, runValidators: true, context: "query" }
+	)
 		.then((updatedPerson) => {
 			res.json(updatedPerson);
 		})
