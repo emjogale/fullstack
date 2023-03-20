@@ -6,3 +6,6 @@
 
 .env
 mongo.js
+.eslintrc.js
+.eslintignore
+
