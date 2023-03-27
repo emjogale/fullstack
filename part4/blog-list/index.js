@@ -2,31 +2,19 @@ const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
 require("dotenv").config();
+const Blog = require("./models/blog");
 
-const app = express();
-const mongoose = require("mongoose");
-
-const blogSchema = new mongoose.Schema({
-	title: String,
-	author: String,
-	url: String,
-	likes: Number,
-});
-
-const Blog = mongoose.model("Blog", blogSchema);
-
-//TODO add in env variable of database url and replace this
-const url = process.env.MONGODB_URI;
-
-// const mongoUrl = "mongodb://localhost/bloglist";
-mongoose
-	.connect(url)
-	.then((result) => {
-		console.log("connected to MongoDB");
-	})
-	.catch((error) => {
-		console.log("error connecting to MongoDB:", error.message);
-	});
+const errorHandler = (error, request, response, next) => {
+	console.log(error.message);
+	if (error.name === "CastError") {
+		return response.status(400).send({
+			error: "malformatted id",
+		});
+	} else if (error.name === "ValidationError") {
+		return response.status(400).json({ error: error.message });
+	}
+	next(error);
+};
 
 const requestLogger = (request, response, next) => {
 	console.log("Method:", request.method);
@@ -35,6 +23,8 @@ const requestLogger = (request, response, next) => {
 	console.log("---");
 	next();
 };
+
+const app = express();
 
 app.use(express.json());
 app.use(cors());
@@ -62,22 +52,27 @@ app.get("/api/blogs", (request, response) => {
 	});
 });
 
-//TODO sort out the get by id function: should the id locally be the same as in the mongodb??
+//TODO is there sometimes a delay with mongodb which causes the id numbers to be different to the localhost ??
 app.get("/api/blogs/:id", (request, response, next) => {
 	Blog.findById(request.params.id)
 		.then((blog) => {
 			response.json(blog);
 		})
-		.catch((error) => console.log(error));
+		.catch((error) => next(error));
 });
 
 app.post("/api/blogs", (request, response) => {
 	const blog = new Blog(request.body);
 
-	blog.save().then((result) => {
-		response.status(201).json(result);
-	});
+	blog
+		.save()
+		.then((result) => {
+			response.status(201).json(result);
+		})
+		.catch((error) => next(error));
 });
+
+app.use(errorHandler);
 
 const PORT = 3003;
 app.listen(PORT, () => {
