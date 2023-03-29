@@ -19,3 +19,4 @@ Refactoring:
 - set up the file structure
 - create a utils/logger.js for all printing to the console
 - create a utils/config.js file for handling of environment variables
+- move route handlers into a dedicate module, which uses express Router(). This creates a new router object. Note this requires all the paths to be defined for the router object. The routes get shortened with the /api/blogs part being removed
