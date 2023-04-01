@@ -14,16 +14,19 @@ const totalLikes = (blogs) => {
 //TODO write favouriteBlog function
 const favoriteBlog = (blogs) => {
 	const likes = blogs.map((blog) => blog.likes);
-	let mostLikes = likes.reduce(function (highest, curr) {
-		return highest > curr ? highest : curr;
-	});
-	const result = blogs.find((x) => x.likes === mostLikes);
-	const result_obj = {
-		title: result.title,
-		author: result.author,
-		likes: result.likes,
-	};
-	return result_obj;
+	if (likes.length === 0) return {};
+	else {
+		let mostLikes = likes.reduce(function (highest, curr) {
+			return highest > curr ? highest : curr;
+		});
+		const result = blogs.find((x) => x.likes === mostLikes);
+		const result_obj = {
+			title: result.title,
+			author: result.author,
+			likes: result.likes,
+		};
+		return result_obj;
+	}
 };
 
 module.exports = {

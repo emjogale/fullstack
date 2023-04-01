@@ -80,6 +80,7 @@ describe("total likes", () => {
 		const result = listHelper.totalLikes(listWithOneBlog);
 		expect(result).toBe(5);
 	});
+
 	test("of a bigger list is calculated right", () => {
 		const result = listHelper.totalLikes(blogs);
 		expect(result).toBe(36);
@@ -87,11 +88,23 @@ describe("total likes", () => {
 });
 
 describe("favorite", () => {
-	test("returns the blog with most likes", () => {
+	test("returns an empty object if there are no likes", () => {
+		expect(listHelper.favoriteBlog(emptyList)).toEqual({});
+	});
+
+	test("returns the blog with most likes in a bigger list", () => {
 		expect(listHelper.favoriteBlog(blogs)).toEqual({
 			title: "Canonical string reduction",
 			author: "Edsger W. Dijkstra",
 			likes: 12,
+		});
+	});
+
+	test("returns the only blog with likes in a list of one blog", () => {
+		expect(listHelper.favoriteBlog(listWithOneBlog)).toEqual({
+			title: "Go To Statement Considered Harmful",
+			author: "Edsger W. Dijkstra",
+			likes: 5,
 		});
 	});
 });
