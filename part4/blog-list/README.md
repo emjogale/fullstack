@@ -19,4 +19,8 @@ Refactoring:
 - set up the file structure
 - create a utils/logger.js for all printing to the console
 - create a utils/config.js file for handling of environment variables
-- move route handlers into a dedicate module, which uses express Router(). This creates a new router object. Note this requires all the paths to be defined for the router object. The routes get shortened with the /api/blogs part being removed
+- move route handlers into a dedicated module, which uses express Router(). This creates a new router object. Note this requires all the paths to be defined for the router object. The routes get shortened with the /api/blogs part being removed
+
+Testing:
+
+- if a test is failing you can use the [only](https://jestjs.io/docs/api#testonlyname-fn-timeout) method so only the failing test is run or you can run the test with the [-t](https://jestjs.io/docs/en/cli.html) flag
