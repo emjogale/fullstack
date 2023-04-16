@@ -27,12 +27,6 @@ morgan.token("json", function (req, res) {
 	return JSON.stringify(req.body);
 });
 
-let persons = [];
-
-const generateId = () => {
-	return Math.floor(Math.random() * 1000000);
-};
-
 app.get("/api/persons", (request, response) => {
 	Person.find({}).then((persons) => {
 		response.json(persons);
