@@ -17,6 +17,13 @@ test("there are two blogs", async () => {
 	expect(response.body).toHaveLength(2);
 });
 
+test("there is an id property", async () => {
+	const response = await api.get("/api/blogs");
+	const firstId = response.body[0].id;
+
+	expect(firstId).toBeDefined();
+});
+
 afterAll(async () => {
 	await mongoose.connection.close();
 });
