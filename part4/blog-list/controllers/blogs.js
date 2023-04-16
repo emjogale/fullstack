@@ -21,15 +21,18 @@ blogRouter.get("/:id", (request, response, next) => {
 		.catch((error) => next(error));
 });
 
-blogRouter.post("/", (request, response) => {
-	const blog = new Blog(request.body);
+blogRouter.post("/", async (request, response) => {
+	const body = request.body;
 
-	blog
-		.save()
-		.then((savedBlog) => {
-			response.status(201).json(savedBlog);
-		})
-		.catch((error) => next(error));
+	const blog = new Blog({
+		title: body.title,
+		author: body.author,
+		url: body.url,
+		likes: body.likes,
+	});
+
+	const savedBlog = await blog.save();
+	response.status(201).json(savedBlog);
 });
 
 blogRouter.delete("/:id", (request, response, next) => {
