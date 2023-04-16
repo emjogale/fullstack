@@ -68,6 +68,24 @@ test("a valid blog can be added", async () => {
 	expect(response.body).toHaveLength(initialBlogs.length + 1);
 	expect(titles).toContain("blog 3");
 });
+test("if the likes property is missing from a new blog it defaults to  0", async () => {
+	const newBlog = {
+		title: "blog 3",
+		author: "clood",
+		url: "url3",
+	};
+
+	await api
+		.post("/api/blogs")
+		.send(newBlog)
+		.expect(201)
+		.expect("Content-Type", /application\/json/);
+
+	const response = await api.get("/api/blogs");
+	const likes = response.body.map((r) => r.likes);
+
+	expect(likes[response.body.length - 1]).toEqual(0);
+});
 
 afterAll(async () => {
 	await mongoose.connection.close();
