@@ -9,10 +9,9 @@ blogRouter.get("/info", (request, response) => {
 	});
 });
 
-blogRouter.get("/", (request, response) => {
-	Blog.find({}).then((blogs) => {
-		response.json(blogs);
-	});
+blogRouter.get("/", async (request, response) => {
+	const blogs = await Blog.find({});
+	response.json(blogs);
 });
 
 blogRouter.get("/:id", (request, response, next) => {
