@@ -1,31 +1,20 @@
 const mongoose = require("mongoose");
 const supertest = require("supertest");
+const helper = require("./test_helper");
 const app = require("../app");
 const Blog = require("../models/blog");
 
 const api = supertest(app);
 
-const initialBlogs = [
-	{
-		title: "blog 1",
-		author: "me",
-		url: "url1",
-		likes: 1,
-	},
-	{
-		title: "blog 2",
-		author: "me again",
-		url: "url2",
-		likes: 0,
-	},
-];
+// TODO sort out a better way of saving multiple objects to the database
 
 beforeEach(async () => {
 	await Blog.deleteMany({});
-	let blogObject = new Blog(initialBlogs[0]);
-	await blogObject.save();
-	blogObject = new Blog(initialBlogs[1]);
-	await blogObject.save();
+
+	for (let blog of helper.initialBlogs) {
+		let blogObject = new Blog(blog);
+		await blogObject.save();
+	}
 });
 
 test("blogs are returned as json", async () => {
@@ -35,10 +24,10 @@ test("blogs are returned as json", async () => {
 		.expect("Content-Type", /application\/json/);
 });
 
-test("there are two blogs", async () => {
+test("there are six blogs", async () => {
 	const response = await api.get("/api/blogs");
-
-	expect(response.body).toHaveLength(initialBlogs.length);
+	console.log(response.body.map((r) => r.title));
+	expect(response.body).toHaveLength(helper.initialBlogs.length);
 });
 
 test("there is an id property", async () => {
@@ -65,7 +54,7 @@ test("a valid blog can be added", async () => {
 	const response = await api.get("/api/blogs");
 	const titles = response.body.map((r) => r.title);
 
-	expect(response.body).toHaveLength(initialBlogs.length + 1);
+	expect(response.body).toHaveLength(helper.initialBlogs.length + 1);
 	expect(titles).toContain("blog 3");
 });
 test("if the likes property is missing from a new blog it defaults to  0", async () => {
@@ -81,10 +70,13 @@ test("if the likes property is missing from a new blog it defaults to  0", async
 		.expect(201)
 		.expect("Content-Type", /application\/json/);
 
-	const response = await api.get("/api/blogs");
-	const likes = response.body.map((r) => r.likes);
+	const blogsAtEnd = await helper.blogsInDb();
+	expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
 
-	expect(likes[response.body.length - 1]).toEqual(0);
+	const likes = blogsAtEnd.map((r) => r.likes);
+	console.log(likes);
+
+	expect(likes[blogsAtEnd.length - 1]).toEqual(0);
 });
 
 afterAll(async () => {
