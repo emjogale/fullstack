@@ -13,12 +13,13 @@ blogRouter.get("/", async (request, response) => {
 	response.json(blogs);
 });
 
-blogRouter.get("/:id", (request, response, next) => {
-	Blog.findById(request.params.id)
-		.then((blog) => {
-			response.json(blog);
-		})
-		.catch((error) => next(error));
+blogRouter.get("/:id", async (request, response) => {
+	const blog = await Blog.findById(request.params.id);
+	if (blog) {
+		response.json(blog);
+	} else {
+		response.status(404).end();
+	}
 });
 
 blogRouter.post("/", async (request, response) => {
@@ -30,19 +31,18 @@ blogRouter.post("/", async (request, response) => {
 		url: body.url,
 		likes: body.likes || 0,
 	});
-
-	const savedBlog = await blog.save();
-
-	response.status(201).json(savedBlog);
-	console.log(savedBlog.likes);
+	if (body.title && body.url) {
+		const savedBlog = await blog.save();
+		response.status(201).json(savedBlog);
+	} else {
+		response.status(400).end();
+	}
 });
 
-blogRouter.delete("/:id", (request, response, next) => {
-	Blog.findByIdAndRemove(request.params.id)
-		.then(() => {
-			response.status(204).end();
-		})
-		.catch((error) => next(error));
+blogRouter.delete("/:id", async (request, response) => {
+	await Blog.findByIdAndRemove(request.params.id);
+
+	response.status(204).end();
 });
 
 blogRouter.put("./:id", (request, response, next) => {

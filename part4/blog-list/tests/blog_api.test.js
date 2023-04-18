@@ -26,7 +26,7 @@ test("blogs are returned as json", async () => {
 
 test("there are six blogs", async () => {
 	const response = await api.get("/api/blogs");
-	console.log(response.body.map((r) => r.title));
+
 	expect(response.body).toHaveLength(helper.initialBlogs.length);
 });
 
@@ -57,6 +57,7 @@ test("a valid blog can be added", async () => {
 	expect(response.body).toHaveLength(helper.initialBlogs.length + 1);
 	expect(titles).toContain("blog 3");
 });
+
 test("if the likes property is missing from a new blog it defaults to  0", async () => {
 	const newBlog = {
 		title: "blog 3",
@@ -74,9 +75,20 @@ test("if the likes property is missing from a new blog it defaults to  0", async
 	expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
 
 	const likes = blogsAtEnd.map((r) => r.likes);
-	console.log(likes);
 
 	expect(likes[blogsAtEnd.length - 1]).toEqual(0);
+});
+
+test("a 400 bad request is received if the title or url properties are missing from the requestd data", async () => {
+	const newBlog = {
+		title: "",
+		author: "clood",
+		likes: 17,
+	};
+
+	const response = await api.post("/api/blogs").send(newBlog);
+
+	expect(response.status).toBe(400);
 });
 
 afterAll(async () => {
