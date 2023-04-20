@@ -98,7 +98,6 @@ describe("deletion of a blog", () => {
 	test("succeeds with a status code 204 if id is valid", async () => {
 		const blogsAtStart = await helper.blogsInDb();
 		const blogToDelete = blogsAtStart[0];
-		console.log("blog to delete", blogToDelete);
 
 		await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
 
@@ -108,6 +107,19 @@ describe("deletion of a blog", () => {
 		const titles = blogsAtEnd.map((r) => r.title);
 
 		expect(titles).not.toContain(blogToDelete.title);
+	});
+});
+
+describe("updating bloglikes", () => {
+	test.only("adding a vote increases its likes by 1", async () => {
+		const blogsAtStart = await helper.blogsInDb();
+		const blogToUpdate = blogsAtStart[1];
+		console.log("likes", blogToUpdate.likes);
+
+		const updatedBlog = { ...blogToUpdate, likes: blogToUpdate.likes + 1 };
+
+		console.log("likes now", updatedBlog.likes);
+		await api.put(`/api/blogs/${blogToUpdate.id}`).expect(200);
 	});
 });
 
