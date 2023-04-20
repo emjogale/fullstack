@@ -111,7 +111,7 @@ describe("deletion of a blog", () => {
 });
 
 describe("updating bloglikes", () => {
-	test.only("adding a vote increases its likes by 1", async () => {
+	test("adding a vote increases its likes by 1", async () => {
 		const blogsAtStart = await helper.blogsInDb();
 		const blogToUpdate = blogsAtStart[1];
 		console.log("likes", blogToUpdate.likes);
@@ -120,6 +120,8 @@ describe("updating bloglikes", () => {
 
 		console.log("likes now", updatedBlog.likes);
 		await api.put(`/api/blogs/${blogToUpdate.id}`).expect(200);
+
+		expect(updatedBlog.likes - blogToUpdate.likes).toBe(1);
 	});
 });
 
