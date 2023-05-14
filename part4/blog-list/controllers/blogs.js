@@ -43,7 +43,7 @@ blogRouter.post("/", middleware.userExtractor, async (request, response) => {
 
 		response.status(201).json(savedBlog);
 	} else {
-		response.status(401).json({ error: "title or url is missing" }).end();
+		response.status(400).json({ error: "title or url is missing" }).end();
 	}
 });
 

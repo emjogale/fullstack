@@ -10,6 +10,7 @@ const User = require("../models/user");
 const Blog = require("../models/blog");
 
 beforeEach(async () => {
+	// delete any blogs and then just add the helper initial blogs
 	await Blog.deleteMany({});
 
 	for (let blog of helper.initialBlogs) {
@@ -40,11 +41,27 @@ describe("when there are initially some blogs saved", () => {
 	});
 });
 
-describe("addition of a new blog", () => {
+// the tests below require us to log a user in
+describe("user logs in and addition of a new blog", () => {
+	beforeEach(async () => {
+		await User.deleteMany({});
+
+		// add emma to users
+		const passwordHash = await bcrypt.hash("sekret", 10);
+		const newUser = new User({ username: "emma", passwordHash });
+
+		await newUser.save();
+	});
+
 	test("succeeds with valid data", async () => {
+		// emma logs in and gets token
+		const emma = { username: "emma", password: "sekret" };
+		const loginResponse = await api.post("/api/login").send(emma);
+		const token = loginResponse.body.token;
+
 		const newBlog = {
 			title: "blog 3",
-			author: "clood",
+			author: "emma",
 			url: "url3",
 			likes: 17,
 		};
@@ -52,6 +69,7 @@ describe("addition of a new blog", () => {
 		await api
 			.post("/api/blogs")
 			.send(newBlog)
+			.set({ Authorization: `Bearer ${token}` })
 			.expect(201)
 			.expect("Content-Type", /application\/json/);
 
@@ -62,16 +80,40 @@ describe("addition of a new blog", () => {
 		expect(titles).toContain("blog 3");
 	});
 
-	test("if the likes property is missing it defaults to  0", async () => {
+	test("fails with status 401 if token is not provided", async () => {
+		// emma doesn't log in and get token
 		const newBlog = {
 			title: "blog 3",
-			author: "clood",
+			author: "emma",
+			url: "url3",
+			likes: 17,
+		};
+
+		const response = await api
+			.post("/api/blogs")
+			.send(newBlog)
+			.expect(401)
+			.expect("Content-Type", /application\/json/);
+
+		expect(response.body.error).toContain("jwt must be provided");
+	});
+
+	test("if the likes property is missing it defaults to  0", async () => {
+		// emma logs in and gets token
+		const emma = { username: "emma", password: "sekret" };
+		const loginResponse = await api.post("/api/login").send(emma);
+		const token = loginResponse.body.token;
+
+		const newBlog = {
+			title: "blog 3",
+			author: "emma",
 			url: "url3",
 		};
 
 		await api
 			.post("/api/blogs")
 			.send(newBlog)
+			.set({ Authorization: `Bearer ${token}` })
 			.expect(201)
 			.expect("Content-Type", /application\/json/);
 
@@ -84,34 +126,77 @@ describe("addition of a new blog", () => {
 	});
 
 	test("fails with a status code 400 if the title or url properties are missing from the requestd data", async () => {
+		// emma logs in and gets token
+		const emma = { username: "emma", password: "sekret" };
+		const loginResponse = await api.post("/api/login").send(emma);
+		const token = loginResponse.body.token;
+
 		const newBlog = {
 			title: "",
-			author: "clood",
+			author: "emma",
 
 			likes: 17,
 		};
 
-		const response = await api.post("/api/blogs").send(newBlog);
+		const response = await api
+			.post("/api/blogs")
+			.send(newBlog)
+			.set({ Authorization: `Bearer ${token}` })
+			.expect(400);
 
-		expect(response.status).toBe(400);
+		expect(response.body.error).toContain("title or url is missing");
 	});
 });
 
 describe("deletion of a blog", () => {
-	test("succeeds with a status code 204 if id is valid", async () => {
-		const blogsAtStart = await helper.blogsInDb();
-		const blogToDelete = blogsAtStart[0];
+	beforeEach(async () => {
+		await User.deleteMany({});
 
-		await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+		// add emma to users
+		const passwordHash = await bcrypt.hash("sekret", 10);
+		const newUser = new User({ username: "emma", passwordHash });
+
+		await newUser.save();
+	});
+
+	test("succeeds with a status code 204 if id is valid and user is the author", async () => {
+		// emma logs in and gets token
+		const emma = { username: "emma", password: "sekret" };
+		const loginResponse = await api.post("/api/login").send(emma);
+		const token = loginResponse.body.token;
+
+		const newBlog = {
+			title: "blog 3",
+			author: "emma",
+			url: "url3",
+		};
+
+		await api
+			.post("/api/blogs")
+			.send(newBlog)
+			.set({ Authorization: `Bearer ${token}` });
+
+		const response = await api.get("/api/blogs");
+		const newBlogs = response.body;
+
+		expect(newBlogs).toHaveLength(helper.initialBlogs.length + 1);
+		const blogToDelete = newBlogs[newBlogs.length - 1];
+
+		await api
+			.delete(`/api/blogs/${blogToDelete.id}`)
+			.set({ Authorization: `Bearer ${token}` })
+			.expect(204);
 
 		const blogsAtEnd = await helper.blogsInDb();
-		expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1);
+		expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
 
 		const titles = blogsAtEnd.map((r) => r.title);
 
 		expect(titles).not.toContain(blogToDelete.title);
 	});
 });
+
+// TODO tests above here need user login validation
 
 describe("updating bloglikes", () => {
 	test("adding a vote increases its likes by 1", async () => {
@@ -120,7 +205,7 @@ describe("updating bloglikes", () => {
 
 		const updatedBlog = { ...blogToUpdate, likes: blogToUpdate.likes + 1 };
 
-		await api.put(`/api/blogs/${blogToUpdate.id}`).expect(200);
+		await api.put(`/api/blogs/${blogToUpdate.id}`).expect(201);
 
 		expect(updatedBlog.likes - blogToUpdate.likes).toBe(1);
 	});
