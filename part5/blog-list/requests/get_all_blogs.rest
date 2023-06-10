@@ -1,0 +1,5 @@
+
+GET http://localhost:3003/api/blogs
+
+Authorization: Bearer 645d4f2a996dc5df6967064c
+

@@ -1,0 +1,11 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1pc3N5IiwiaWQiOiI2NDgyZDQzMzZlNWU1Njk1NDEyOGQ0YmYiLCJpYXQiOjE2ODYzOTM3OTV9.U_WDufW_gI82AyY3Wy2c9U1dOcVxWhNR4VwqBpPux1I
+
+{
+   "title" : "all i know about blogs 1",
+   "author" : "Mr Bloggy",
+   "likes": 16,
+   "url": "test url"
+}
+
