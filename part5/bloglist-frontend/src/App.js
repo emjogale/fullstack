@@ -24,6 +24,10 @@ const App = () => {
 		blogService.getAll().then((blogs) => setBlogs(blogs));
 	}, []);
 
+	useEffect(() => {
+		console.log("current user:", user);
+	}, [user]);
+
 	// notify success in creating a blog or error with logging in
 	const popUp = (message, type = "success") => {
 		setPopupMessage({ message, type });
@@ -33,9 +37,11 @@ const App = () => {
 	};
 
 	const handleLogout = () => {
-		window.localStorage.clear();
-
 		setUser(null);
+		window.localStorage.clear();
+		if (user === null) {
+			console.log("success - logged out!!");
+		}
 		console.log("after logging out user is", user);
 		console.log(window.localStorage);
 	};
@@ -85,6 +91,7 @@ const App = () => {
 		};
 		try {
 			await blogService.create(blogObject);
+
 			popUp(
 				`a new blog ${blogObject.title} by ${blogObject.author} was added by`,
 				user
