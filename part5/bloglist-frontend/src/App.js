@@ -2,28 +2,43 @@ import { useState, useEffect } from "react";
 import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
+import Notification from "./components/Notification";
 
 const App = () => {
 	const [blogs, setBlogs] = useState([]);
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 	const [user, setUser] = useState(null);
-	const [errorMessage, setErrorMessage] = useState(null);
+	const [newBlog, setNewBlog] = useState({
+		title: "",
+		author: "",
+		url: "",
+		user: "",
+	});
+	const [popupMessage, setPopupMessage] = useState({
+		message: null,
+		type: "success",
+	});
 
 	useEffect(() => {
 		blogService.getAll().then((blogs) => setBlogs(blogs));
 	}, []);
 
-	// check if there is a user is logged on and saved in localstorage
+	// notify success in creating a blog or error with logging in
+	const popUp = (message, type = "success") => {
+		setPopupMessage({ message, type });
+		setTimeout(() => {
+			setPopupMessage({ message: null });
+		}, 4000);
+	};
 
-	useEffect(() => {
-		const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
-		if (loggedUserJSON) {
-			const user = JSON.parse(loggedUserJSON);
-			setUser(user);
-			blogService.setToken(user.token);
-		}
-	}, []);
+	const handleLogout = () => {
+		window.localStorage.clear();
+
+		setUser(null);
+		console.log("after logging out user is", user);
+		console.log(window.localStorage);
+	};
 
 	const handleLogin = async (event) => {
 		event.preventDefault();
@@ -36,21 +51,59 @@ const App = () => {
 			setUser(user);
 			setUsername("");
 			setPassword("");
+			console.log(user, "is logged in");
 		} catch (exception) {
 			console.log("Wrong credentials");
+			popUp("wrong username or password", "error");
 		}
 	};
 
-	const handleLogout = () => {
-		window.localStorage.removeItem("loggedBlogappUser");
-		setUser(null);
-		console.log(window.localStorage);
+	// check if there is a user is logged on and saved in localstorage
+
+	useEffect(() => {
+		const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
+		if (loggedUserJSON) {
+			const user = JSON.parse(loggedUserJSON);
+			setUser(user);
+			blogService.setToken(user.token);
+		}
+	}, []);
+
+	const handleBlogChange = (event) => {
+		setNewBlog({ ...newBlog, [event.target.name]: event.target.value });
 	};
 
+	// TODO: add the correct user who has created the new blog - at present it's the previous user. check how we do it originally
+	const addBlog = async (event) => {
+		event.preventDefault();
+		console.log("frontend the user is", user);
+		const blogObject = {
+			title: newBlog.title,
+			author: newBlog.author,
+			url: newBlog.url,
+			user: user.id,
+		};
+		try {
+			await blogService.create(blogObject);
+			popUp(
+				`a new blog ${blogObject.title} by ${blogObject.author} was added by`,
+				user
+			);
+			setNewBlog({
+				title: "",
+				author: "",
+				url: "",
+				user: "",
+			});
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	if (user === null) {
 		return (
 			<div>
 				<h2>log in to application</h2>
+				<Notification popupMessage={popupMessage} />
 				<form onSubmit={handleLogin}>
 					<div>
 						username
@@ -79,14 +132,52 @@ const App = () => {
 	return (
 		<div>
 			<h2>blogs</h2>
+			<Notification popupMessage={popupMessage} />
 			<p>
 				{user.name} is logged in
-				<button onClick={() => handleLogout()}>logout</button>
+				<button onClick={handleLogout}>logout</button>
 			</p>
 
-			{blogs.map((blog) => (
-				<Blog key={blog.id} blog={blog} />
-			))}
+			<h2>create new</h2>
+
+			<form onSubmit={addBlog}>
+				<div>
+					<label>
+						title:
+						<input
+							type="text"
+							name="title"
+							value={newBlog.title}
+							onChange={handleBlogChange}
+						/>
+					</label>
+				</div>
+
+				<div>
+					<label>
+						author:
+						<input
+							type="text"
+							name="author"
+							value={newBlog.author}
+							onChange={handleBlogChange}
+						/>
+					</label>
+				</div>
+
+				<div>
+					<label>
+						url:
+						<input name="url" value={newBlog.url} onChange={handleBlogChange} />
+					</label>
+				</div>
+				<button type="submit">create</button>
+			</form>
+			<div>
+				{blogs.map((blog) => (
+					<Blog key={blog.id} blog={blog} />
+				))}
+			</div>
 		</div>
 	);
 };

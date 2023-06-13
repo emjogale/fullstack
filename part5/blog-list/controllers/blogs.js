@@ -27,6 +27,7 @@ blogRouter.get("/:id", async (request, response) => {
 blogRouter.post("/", middleware.userExtractor, async (request, response) => {
 	const body = request.body;
 	const user = await User.findById(request.user);
+	console.log("backend user found in db is", user.username);
 
 	const blog = new Blog({
 		title: body.title,
