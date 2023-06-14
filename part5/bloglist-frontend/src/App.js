@@ -24,9 +24,10 @@ const App = () => {
 		blogService.getAll().then((blogs) => setBlogs(blogs));
 	}, []);
 
-	useEffect(() => {
-		console.log("current user:", user);
-	}, [user]);
+	// this was used to debug the logged in user issue
+	// useEffect(() => {
+	// 	console.log("current user:", user);
+	// }, [user]);
 
 	// notify success in creating a blog or error with logging in
 	const popUp = (message, type = "success") => {
@@ -39,11 +40,6 @@ const App = () => {
 	const handleLogout = () => {
 		setUser(null);
 		window.localStorage.clear();
-		if (user === null) {
-			console.log("success - logged out!!");
-		}
-		console.log("after logging out user is", user);
-		console.log(window.localStorage);
 	};
 
 	const handleLogin = async (event) => {
@@ -57,7 +53,8 @@ const App = () => {
 			setUser(user);
 			setUsername("");
 			setPassword("");
-			console.log(user, "is logged in");
+			// the important bit to allocate the token to the user
+			blogService.setToken(user.token);
 		} catch (exception) {
 			console.log("Wrong credentials");
 			popUp("wrong username or password", "error");
@@ -79,10 +76,8 @@ const App = () => {
 		setNewBlog({ ...newBlog, [event.target.name]: event.target.value });
 	};
 
-	// TODO: add the correct user who has created the new blog - at present it's the previous user. check how we do it originally
 	const addBlog = async (event) => {
 		event.preventDefault();
-		console.log("frontend the user is", user);
 		const blogObject = {
 			title: newBlog.title,
 			author: newBlog.author,

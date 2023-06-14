@@ -179,7 +179,6 @@ describe("deletion of a blog", () => {
 
 		const response = await api.get("/api/blogs");
 		const newBlogs = response.body;
-		// console.log("newBlogs are", newBlogs);
 
 		expect(newBlogs).toHaveLength(helper.initialBlogs.length + 1);
 

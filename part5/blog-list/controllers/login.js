@@ -28,7 +28,6 @@ loginRouter.post("/", async (request, response) => {
 	response
 		.status(200)
 		.send({ token, username: user.username, name: user.name });
-	console.log("who is now logged in?", username);
 });
 
 module.exports = loginRouter;
