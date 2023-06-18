@@ -19,6 +19,7 @@ const App = () => {
 		message: null,
 		type: "success",
 	});
+	const [newBlogVisible, setnewBlogVisible] = useState(false);
 
 	useEffect(() => {
 		blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -72,6 +73,90 @@ const App = () => {
 		}
 	}, []);
 
+	const loginForm = () => {
+		return (
+			<div>
+				<h2>log in to application</h2>
+
+				<form onSubmit={handleLogin}>
+					<div>
+						username
+						<input
+							type="text"
+							value={username}
+							name="Username"
+							onChange={({ target }) => setUsername(target.value)}
+						/>
+					</div>
+					<div>
+						password
+						<input
+							type="password"
+							value={password}
+							name="Password"
+							onChange={({ target }) => setPassword(target.value)}
+						/>
+					</div>
+					<button type="submit">login</button>
+				</form>
+			</div>
+		);
+	};
+
+	const blogForm = () => {
+		const hideWhenVisible = { display: newBlogVisible ? "none" : "" };
+		const showWhenVisible = { display: newBlogVisible ? "" : "none" };
+		return (
+			<div>
+				<div style={hideWhenVisible}>
+					<button onClick={() => setnewBlogVisible(true)}>add new blog</button>
+				</div>
+				<div style={showWhenVisible}>
+					<h2>create new</h2>
+					<form onSubmit={addBlog}>
+						<div>
+							<label>
+								title:
+								<input
+									type="text"
+									name="title"
+									value={newBlog.title}
+									onChange={handleBlogChange}
+								/>
+							</label>
+						</div>
+
+						<div>
+							<label>
+								author:
+								<input
+									type="text"
+									name="author"
+									value={newBlog.author}
+									onChange={handleBlogChange}
+								/>
+							</label>
+						</div>
+
+						<div>
+							<label>
+								url:
+								<input
+									name="url"
+									value={newBlog.url}
+									onChange={handleBlogChange}
+								/>
+							</label>
+						</div>
+						<button type="submit">create</button>
+					</form>
+
+					<button onClick={() => setnewBlogVisible(false)}>cancel</button>
+				</div>
+			</div>
+		);
+	};
+
 	const handleBlogChange = (event) => {
 		setNewBlog({ ...newBlog, [event.target.name]: event.target.value });
 	};
@@ -97,84 +182,24 @@ const App = () => {
 				url: "",
 				user: "",
 			});
+			setnewBlogVisible(false);
 		} catch (error) {
 			console.log(error);
 		}
 	};
-	if (user === null) {
-		return (
-			<div>
-				<h2>log in to application</h2>
-				<Notification popupMessage={popupMessage} />
-				<form onSubmit={handleLogin}>
-					<div>
-						username
-						<input
-							type="text"
-							value={username}
-							name="Username"
-							onChange={({ target }) => setUsername(target.value)}
-						/>
-					</div>
-					<div>
-						password
-						<input
-							type="password"
-							value={password}
-							name="Password"
-							onChange={({ target }) => setPassword(target.value)}
-						/>
-					</div>
-					<button type="submit">login</button>
-				</form>
-			</div>
-		);
-	}
 
 	return (
 		<div>
 			<h2>blogs</h2>
 			<Notification popupMessage={popupMessage} />
-			<p>
-				{user.name} is logged in
-				<button onClick={handleLogout}>logout</button>
-			</p>
+			{user && (
+				<p>
+					{user.name} is logged in
+					<button onClick={handleLogout}>logout</button>
+				</p>
+			)}
+			{user === null ? loginForm() : blogForm()}
 
-			<h2>create new</h2>
-
-			<form onSubmit={addBlog}>
-				<div>
-					<label>
-						title:
-						<input
-							type="text"
-							name="title"
-							value={newBlog.title}
-							onChange={handleBlogChange}
-						/>
-					</label>
-				</div>
-
-				<div>
-					<label>
-						author:
-						<input
-							type="text"
-							name="author"
-							value={newBlog.author}
-							onChange={handleBlogChange}
-						/>
-					</label>
-				</div>
-
-				<div>
-					<label>
-						url:
-						<input name="url" value={newBlog.url} onChange={handleBlogChange} />
-					</label>
-				</div>
-				<button type="submit">create</button>
-			</form>
 			<div>
 				{blogs.map((blog) => (
 					<Blog key={blog.id} blog={blog} />
