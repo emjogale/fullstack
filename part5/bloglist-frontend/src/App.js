@@ -3,18 +3,14 @@ import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import Notification from "./components/Notification";
+import BlogForm from "./components/BlogForm";
 
 const App = () => {
 	const [blogs, setBlogs] = useState([]);
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 	const [user, setUser] = useState(null);
-	const [newBlog, setNewBlog] = useState({
-		title: "",
-		author: "",
-		url: "",
-		user: "",
-	});
+
 	const [popupMessage, setPopupMessage] = useState({
 		message: null,
 		type: "success",
@@ -30,7 +26,6 @@ const App = () => {
 	// 	console.log("current user:", user);
 	// }, [user]);
 
-	// notify success in creating a blog or error with logging in
 	const popUp = (message, type = "success") => {
 		setPopupMessage({ message, type });
 		setTimeout(() => {
@@ -113,43 +108,7 @@ const App = () => {
 				</div>
 				<div style={showWhenVisible}>
 					<h2>create new</h2>
-					<form onSubmit={addBlog}>
-						<div>
-							<label>
-								title:
-								<input
-									type="text"
-									name="title"
-									value={newBlog.title}
-									onChange={handleBlogChange}
-								/>
-							</label>
-						</div>
-
-						<div>
-							<label>
-								author:
-								<input
-									type="text"
-									name="author"
-									value={newBlog.author}
-									onChange={handleBlogChange}
-								/>
-							</label>
-						</div>
-
-						<div>
-							<label>
-								url:
-								<input
-									name="url"
-									value={newBlog.url}
-									onChange={handleBlogChange}
-								/>
-							</label>
-						</div>
-						<button type="submit">create</button>
-					</form>
+					<BlogForm createBlog={addBlog} />
 
 					<button onClick={() => setnewBlogVisible(false)}>cancel</button>
 				</div>
@@ -157,18 +116,7 @@ const App = () => {
 		);
 	};
 
-	const handleBlogChange = (event) => {
-		setNewBlog({ ...newBlog, [event.target.name]: event.target.value });
-	};
-
-	const addBlog = async (event) => {
-		event.preventDefault();
-		const blogObject = {
-			title: newBlog.title,
-			author: newBlog.author,
-			url: newBlog.url,
-			user: user.id,
-		};
+	const addBlog = async (blogObject) => {
 		try {
 			await blogService.create(blogObject);
 
@@ -176,12 +124,7 @@ const App = () => {
 				`a new blog ${blogObject.title} by ${blogObject.author} was added by`,
 				user
 			);
-			setNewBlog({
-				title: "",
-				author: "",
-				url: "",
-				user: "",
-			});
+
 			setnewBlogVisible(false);
 		} catch (error) {
 			console.log(error);
