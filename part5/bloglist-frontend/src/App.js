@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import Notification from "./components/Notification";
 import BlogForm from "./components/BlogForm";
+import Togglable from "./components/Togglable";
+import LoginForm from "./components/LoginForm";
 
 const App = () => {
 	const [blogs, setBlogs] = useState([]);
@@ -15,7 +17,7 @@ const App = () => {
 		message: null,
 		type: "success",
 	});
-	const [newBlogVisible, setnewBlogVisible] = useState(false);
+	const blogFormRef = useRef();
 
 	useEffect(() => {
 		blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -71,47 +73,25 @@ const App = () => {
 	const loginForm = () => {
 		return (
 			<div>
-				<h2>log in to application</h2>
-
-				<form onSubmit={handleLogin}>
-					<div>
-						username
-						<input
-							type="text"
-							value={username}
-							name="Username"
-							onChange={({ target }) => setUsername(target.value)}
-						/>
-					</div>
-					<div>
-						password
-						<input
-							type="password"
-							value={password}
-							name="Password"
-							onChange={({ target }) => setPassword(target.value)}
-						/>
-					</div>
-					<button type="submit">login</button>
-				</form>
+				<Togglable buttonLabel="log in">
+					<LoginForm
+						username={username}
+						password={password}
+						handleUsernameChange={({ target }) => setUsername(target.value)}
+						handlePasswordChange={({ target }) => setPassword(target.value)}
+						handleSubmit={handleLogin}
+					/>
+				</Togglable>
 			</div>
 		);
 	};
 
 	const blogForm = () => {
-		const hideWhenVisible = { display: newBlogVisible ? "none" : "" };
-		const showWhenVisible = { display: newBlogVisible ? "" : "none" };
 		return (
 			<div>
-				<div style={hideWhenVisible}>
-					<button onClick={() => setnewBlogVisible(true)}>add new blog</button>
-				</div>
-				<div style={showWhenVisible}>
-					<h2>create new</h2>
+				<Togglable buttonLabel="create new blog" ref={blogFormRef}>
 					<BlogForm createBlog={addBlog} />
-
-					<button onClick={() => setnewBlogVisible(false)}>cancel</button>
-				</div>
+				</Togglable>
 			</div>
 		);
 	};
@@ -125,8 +105,6 @@ const App = () => {
 				`a new blog ${blogObject.title} by ${blogObject.author} was added by`,
 				user
 			);
-
-			setnewBlogVisible(false);
 		} catch (error) {
 			console.log(error);
 		}
