@@ -118,7 +118,8 @@ const App = () => {
 
 	const addBlog = async (blogObject) => {
 		try {
-			await blogService.create(blogObject);
+			const newBlog = await blogService.create(blogObject);
+			setBlogs(blogs.concat(newBlog));
 
 			popUp(
 				`a new blog ${blogObject.title} by ${blogObject.author} was added by`,
