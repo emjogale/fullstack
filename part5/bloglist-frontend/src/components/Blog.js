@@ -1,15 +1,32 @@
+import { useState } from "react";
+
 const Blog = ({ blog }) => {
+	const [showDetails, setShowDetails] = useState(false);
+
+	const showWhenVisible = {
+		display: showDetails ? "" : "none",
+	};
+
 	const blogStyle = {
-		padding: 10,
+		paddingTop: 10,
 		paddingLeft: 2,
 		border: "solid",
 		borderWidth: 1,
-		margin: 5,
+		marginBottom: 5,
 		backgroundColor: "lightcyan",
 	};
 	return (
 		<div style={blogStyle}>
 			{blog.title} {blog.author}
+			<button onClick={() => setShowDetails(!showDetails)}>
+				{showDetails ? "hide" : "show"}
+			</button>
+			<div style={showWhenVisible}>
+				{blog.url}
+				<br />
+				likes {blog.likes}
+				<button>like</button>
+			</div>
 		</div>
 	);
 };

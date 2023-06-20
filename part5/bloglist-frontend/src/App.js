@@ -19,8 +19,13 @@ const App = () => {
 	});
 	const blogFormRef = useRef();
 
+	// I had a go at writing using an async function inside the useEffect hook reference : https://ultimatecourses.com/blog/using-async-await-inside-react-use-effect-hook
 	useEffect(() => {
-		blogService.getAll().then((blogs) => setBlogs(blogs));
+		(async () => {
+			const blogs = await blogService.getAll();
+			setBlogs(blogs);
+		})();
+		return () => {};
 	}, []);
 
 	// this was used to debug the logged in user issue
