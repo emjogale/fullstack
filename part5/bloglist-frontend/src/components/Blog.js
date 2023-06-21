@@ -19,13 +19,15 @@ const Blog = ({ blog }) => {
 		<div style={blogStyle}>
 			{blog.title} {blog.author}
 			<button onClick={() => setShowDetails(!showDetails)}>
-				{showDetails ? "hide" : "show"}
+				{showDetails ? "hide" : "view"}
 			</button>
 			<div style={showWhenVisible}>
 				{blog.url}
 				<br />
 				likes {blog.likes}
 				<button>like</button>
+				<br />
+				{blog.user.name}
 			</div>
 		</div>
 	);

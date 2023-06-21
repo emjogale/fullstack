@@ -29,9 +29,9 @@ const App = () => {
 	}, []);
 
 	// this was used to debug the logged in user issue
-	// useEffect(() => {
-	// 	console.log("current user:", user);
-	// }, [user]);
+	useEffect(() => {
+		console.log("current user:", user);
+	}, [user]);
 
 	const popUp = (message, type = "success") => {
 		setPopupMessage({ message, type });
@@ -104,6 +104,7 @@ const App = () => {
 	const addBlog = async (blogObject) => {
 		try {
 			const newBlog = await blogService.create(blogObject);
+
 			setBlogs(blogs.concat(newBlog));
 
 			popUp(
@@ -129,7 +130,7 @@ const App = () => {
 
 			<div>
 				{blogs.map((blog) => (
-					<Blog key={blog.id} blog={blog} />
+					<Blog key={blog.id} blog={blog} user={user ? user : ""} />
 				))}
 			</div>
 		</div>

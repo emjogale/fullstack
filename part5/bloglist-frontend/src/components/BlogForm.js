@@ -10,6 +10,7 @@ const BlogForm = ({ createBlog }) => {
 
 	const addBlog = (event) => {
 		event.preventDefault();
+
 		createBlog({
 			title: newBlog.title,
 			author: newBlog.author,
