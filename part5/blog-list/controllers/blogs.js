@@ -36,11 +36,14 @@ blogRouter.post("/", middleware.userExtractor, async (request, response) => {
 		user: user.id,
 	});
 	if (body.title && body.url) {
+		await blog.populate("user", { name: 1 });
 		const savedBlog = await blog.save();
 
 		user.blogs = user.blogs.concat(savedBlog._id);
 		await user.save();
 
+		console.log("blog saved by", user.name);
+		console.log("saved blog is", savedBlog);
 		response.status(201).json(savedBlog);
 	} else {
 		response.status(400).json({ error: "title or url is missing" }).end();
