@@ -24,7 +24,6 @@ const create = async (newObject) => {
 
 // check this is correctly changed to an async function
 const update = async (id, newObject) => {
-	// this is where the problem is the id is in fact the object
 	console.log("the newObject in the update is", newObject);
 	const response = await axios.put(`${baseUrl}/${id}`, newObject);
 	console.log("the updated likes blog is now ", response.data);

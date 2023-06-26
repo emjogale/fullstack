@@ -116,7 +116,6 @@ const App = () => {
 	};
 
 	const updateBlog = async (id, blogObject) => {
-		console.log("the id is", id);
 		console.log("the blog object is ", blogObject);
 		try {
 			const updatedBlog = await blogService.update(id, blogObject);
@@ -125,6 +124,8 @@ const App = () => {
 			console.log(error);
 		}
 	};
+
+	const likesSortedBlogs = blogs.sort((a, b) => b.likes - a.likes);
 
 	return (
 		<div>
@@ -139,7 +140,7 @@ const App = () => {
 			{user === null ? loginForm() : blogForm()}
 
 			<div>
-				{blogs.map((blog) => (
+				{likesSortedBlogs.map((blog) => (
 					<Blog key={blog.id} blog={blog} addLike={updateBlog} />
 				))}
 			</div>

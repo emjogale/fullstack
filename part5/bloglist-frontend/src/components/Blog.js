@@ -8,12 +8,12 @@ const Blog = ({ blog, addLike }) => {
 	};
 
 	const handleClick = () => {
-		console.log("we need to add a like to the blog with id of ", blog.id);
 		addLike(blog.id, {
 			title: blog.title,
 			author: blog.author,
 			url: blog.url,
 			likes: (blog.likes += 1),
+			user: blog.user,
 		});
 	};
 
