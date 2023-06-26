@@ -1,10 +1,20 @@
 import { useState } from "react";
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, addLike }) => {
 	const [showDetails, setShowDetails] = useState(false);
 
 	const showWhenVisible = {
 		display: showDetails ? "" : "none",
+	};
+
+	const handleClick = () => {
+		console.log("we need to add a like to the blog with id of ", blog.id);
+		addLike(blog.id, {
+			title: blog.title,
+			author: blog.author,
+			url: blog.url,
+			likes: (blog.likes += 1),
+		});
 	};
 
 	const blogStyle = {
@@ -25,7 +35,7 @@ const Blog = ({ blog }) => {
 				{blog.url}
 				<br />
 				likes {blog.likes}
-				<button>like</button>
+				<button onClick={handleClick}>like</button>
 				<br />
 				{blog.user.name}
 			</div>
