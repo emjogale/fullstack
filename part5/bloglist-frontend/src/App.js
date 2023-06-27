@@ -116,10 +116,18 @@ const App = () => {
 	};
 
 	const updateBlog = async (id, blogObject) => {
-		console.log("the blog object is ", blogObject);
 		try {
 			const updatedBlog = await blogService.update(id, blogObject);
 			setBlogs(blogs.map((blog) => (blog.id !== id ? blog : updatedBlog)));
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const deleteBlog = async (id) => {
+		try {
+			setBlogs(blogs.filter((b) => b.id !== id));
+			await blogService.deleteBlog(id);
 		} catch (error) {
 			console.log(error);
 		}
@@ -141,7 +149,13 @@ const App = () => {
 
 			<div>
 				{likesSortedBlogs.map((blog) => (
-					<Blog key={blog.id} blog={blog} addLike={updateBlog} />
+					<Blog
+						key={blog.id}
+						blog={blog}
+						addLike={updateBlog}
+						removeBlog={deleteBlog}
+						user={user}
+					/>
 				))}
 			</div>
 		</div>

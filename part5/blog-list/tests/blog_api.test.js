@@ -126,7 +126,7 @@ describe("user logs in and addition of a new blog", () => {
 		expect(likes[blogsAtEnd.length - 1]).toEqual(0);
 	});
 
-	test("fails with a status code 400 if the title or url properties are missing from the requestd data", async () => {
+	test("fails with a status code 400 if the title or url properties are missing from the request data", async () => {
 		// emma logs in and gets token
 		const emma = { username: "emma", password: "sekret" };
 		const loginResponse = await api.post("/api/login").send(emma);
