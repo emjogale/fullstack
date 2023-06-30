@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { useImperativeHandle, useState, forwardRef } from "react";
 
 const Togglable = forwardRef((props, refs) => {
@@ -32,5 +33,11 @@ const Togglable = forwardRef((props, refs) => {
     </div>
   );
 });
+
+Togglable.propTypes = {
+  buttonLabel: PropTypes.string.isRequired,
+};
+
+Togglable.displayName = "Togglable";
 
 export default Togglable;
