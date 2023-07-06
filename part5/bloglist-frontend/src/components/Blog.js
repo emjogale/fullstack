@@ -1,12 +1,12 @@
-import React from "react";
-import { useState } from "react";
+import React from 'react'
+import { useState } from 'react'
 
 const Blog = ({ blog, addLike, removeBlog, user }) => {
-  const [showDetails, setShowDetails] = useState(false);
+  const [showDetails, setShowDetails] = useState(false)
 
   const showWhenVisible = {
-    display: showDetails ? "" : "none",
-  };
+    display: showDetails ? '' : 'none',
+  }
 
   const handleClick = () => {
     addLike(blog.id, {
@@ -15,30 +15,32 @@ const Blog = ({ blog, addLike, removeBlog, user }) => {
       url: blog.url,
       likes: (blog.likes += 1),
       user: blog.user,
-    });
-  };
+    })
+  }
 
   const handleDelete = () => {
     if (window.confirm(`Remove blog? ${blog.title} by ${blog.author}?`)) {
-      removeBlog(blog.id);
+      removeBlog(blog.id)
     }
-  };
+  }
 
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
-    border: "solid",
+    border: 'solid',
     borderWidth: 1,
     marginBottom: 5,
-    backgroundColor: "lightcyan",
-  };
+    backgroundColor: 'lightcyan',
+  }
   return (
     <div style={blogStyle}>
-      {blog.title} {blog.author}
-      <button onClick={() => setShowDetails(!showDetails)}>
-        {showDetails ? "hide" : "view"}
-      </button>
-      <div style={showWhenVisible}>
+      <div className="title-author">
+        {blog.title} {blog.author}
+        <button onClick={() => setShowDetails(!showDetails)}>
+          {showDetails ? 'hide' : 'view'}
+        </button>
+      </div>
+      <div style={showWhenVisible} className="togglableContent">
         {blog.url}
         <br />
         likes {blog.likes}
@@ -51,7 +53,7 @@ const Blog = ({ blog, addLike, removeBlog, user }) => {
         ) : null}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Blog;
+export default Blog
