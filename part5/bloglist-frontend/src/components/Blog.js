@@ -40,7 +40,7 @@ const Blog = ({ blog, addLike, removeBlog, user }) => {
           {showDetails ? 'hide' : 'view'}
         </button>
       </div>
-      <div style={showWhenVisible} className="togglableContent">
+      <div style={showWhenVisible}>
         {blog.url}
         <br />
         likes {blog.likes}

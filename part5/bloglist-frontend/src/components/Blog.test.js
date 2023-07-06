@@ -4,7 +4,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
 
-test('renders content', () => {
+test('renders title and author but not url or likes by default', () => {
   const blog = {
     title: 'Looking into the displaying of a blog',
     author: 'Mrs Bloggy',
