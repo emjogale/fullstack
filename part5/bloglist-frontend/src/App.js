@@ -1,80 +1,78 @@
-import React from "react";
-import { useState, useEffect, useRef } from "react";
-import Blog from "./components/Blog";
-import blogService from "./services/blogs";
-import loginService from "./services/login";
-import Notification from "./components/Notification";
-import BlogForm from "./components/BlogForm";
-import Togglable from "./components/Togglable";
-import LoginForm from "./components/LoginForm";
+import React from 'react'
+import { useState, useEffect, useRef } from 'react'
+import Blog from './components/Blog'
+import blogService from './services/blogs'
+import loginService from './services/login'
+import Notification from './components/Notification'
+import BlogForm from './components/BlogForm'
+import Togglable from './components/Togglable'
+import LoginForm from './components/LoginForm'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [user, setUser] = useState(null);
+  const [blogs, setBlogs] = useState([])
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [user, setUser] = useState(null)
 
   const [popupMessage, setPopupMessage] = useState({
     message: null,
-    type: "success",
-  });
-  const blogFormRef = useRef();
+    type: 'success',
+  })
+  const blogFormRef = useRef()
 
   // I had a go at writing using an async function inside the useEffect hook reference : https://ultimatecourses.com/blog/using-async-await-inside-react-use-effect-hook
   useEffect(() => {
-    (async () => {
-      const blogs = await blogService.getAll();
-      setBlogs(blogs);
-    })();
-    return () => {};
-  }, []);
+    blogService.getAll().then((initialBlogs) => {
+      setBlogs(initialBlogs)
+    })
+  }, [])
 
   // this was used to debug the logged in user issue
   // useEffect(() => {
   // 	console.log("current user:", user);
   // }, [user]);
 
-  const popUp = (message, type = "success") => {
-    setPopupMessage({ message, type });
+  const popUp = (message, type = 'success') => {
+    setPopupMessage({ message, type })
     setTimeout(() => {
-      setPopupMessage({ message: null });
-    }, 4000);
-  };
+      setPopupMessage({ message: null })
+    }, 4000)
+  }
 
   const handleLogout = () => {
-    setUser(null);
-    window.localStorage.clear();
-  };
+    setUser(null)
+    window.localStorage.clear()
+  }
 
   const handleLogin = async (event) => {
-    event.preventDefault();
+    event.preventDefault()
     try {
       const user = await loginService.login({
         username,
         password,
-      });
-      window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
-      setUser(user);
-      setUsername("");
-      setPassword("");
+      })
+      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
+      setUser(user)
+      setUsername('')
+      setPassword('')
       // the important bit to allocate the token to the user
-      blogService.setToken(user.token);
+      blogService.setToken(user.token)
     } catch (exception) {
-      console.log("Wrong credentials");
-      popUp("wrong username or password", "error");
+      console.log('Wrong credentials')
+      popUp('wrong username or password', 'error')
     }
-  };
+  }
 
   // check if there is a user is logged on and saved in localstorage
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON);
-      setUser(user);
-      blogService.setToken(user.token);
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      blogService.setToken(user.token)
     }
-  }, []);
+  }, [])
 
   const loginForm = () => {
     return (
@@ -89,8 +87,8 @@ const App = () => {
           />
         </Togglable>
       </div>
-    );
-  };
+    )
+  }
 
   const blogForm = () => {
     return (
@@ -99,42 +97,42 @@ const App = () => {
           <BlogForm createBlog={addBlog} />
         </Togglable>
       </div>
-    );
-  };
+    )
+  }
 
   const addBlog = async (blogObject) => {
     try {
-      const newBlog = await blogService.create(blogObject);
+      const newBlog = await blogService.create(blogObject)
 
-      setBlogs(blogs.concat(newBlog));
+      setBlogs(blogs.concat(newBlog))
 
       popUp(
         `a new blog ${blogObject.title} by ${blogObject.author} was added by ${user.name}`
-      );
+      )
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
-  };
+  }
 
   const updateBlog = async (id, blogObject) => {
     try {
-      const updatedBlog = await blogService.update(id, blogObject);
-      setBlogs(blogs.map((blog) => (blog.id !== id ? blog : updatedBlog)));
+      const updatedBlog = await blogService.update(id, blogObject)
+      setBlogs(blogs.map((blog) => (blog.id !== id ? blog : updatedBlog)))
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
-  };
+  }
 
   const deleteBlog = async (id) => {
     try {
-      setBlogs(blogs.filter((b) => b.id !== id));
-      await blogService.deleteBlog(id);
+      setBlogs(blogs.filter((b) => b.id !== id))
+      await blogService.deleteBlog(id)
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
-  };
+  }
 
-  const likesSortedBlogs = blogs.sort((a, b) => b.likes - a.likes);
+  const likesSortedBlogs = blogs.sort((a, b) => b.likes - a.likes)
 
   return (
     <div>
@@ -155,12 +153,12 @@ const App = () => {
             blog={blog}
             addLike={updateBlog}
             removeBlog={deleteBlog}
-            user={user}
+            user={user || null}
           />
         ))}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default App;
+export default App
