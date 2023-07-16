@@ -57,12 +57,25 @@ describe('Blog app', function () {
       cy.contains('Tennis tips John McEnroe')
     })
 
-    describe('and a blog exists', function () {
+    describe('and several blogs exist', function () {
       beforeEach(function () {
         cy.createBlog({
           title: 'All about Elvis',
           author: 'Elvana',
+          likes: 0,
           url: 'testurl2',
+        })
+        cy.createBlog({
+          title: 'Top ten mops',
+          author: 'Mr Clean',
+          likes: 10,
+          url: 'testurl3',
+        })
+        cy.createBlog({
+          title: 'How to win the lottery',
+          author: 'Money Spider',
+          likes: 150,
+          url: 'testurl4',
         })
       })
 
@@ -75,15 +88,17 @@ describe('Blog app', function () {
       })
 
       it('a blog can be deleted by the user who created it', function () {
-        cy.contains('view').click()
-        cy.contains('delete').click()
+        cy.contains('All about Elvis Elvana').contains('view').click()
+        cy.contains('All about Elvis Elvana')
+          .siblings()
+          .contains('delete')
+          .click()
 
         cy.contains('All about Elvis Elvana').should('not.exist')
       })
 
       it('only the creator of the blog can see the delete button', function () {
         cy.contains('view').click()
-        cy.contains('delete')
 
         cy.contains('logout').click()
         cy.login({ username: 'bunty', password: 'bigSekret' })
