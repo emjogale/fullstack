@@ -1,13 +1,13 @@
 describe('Blog app', function () {
   beforeEach(function () {
-    cy.visit('http://localhost:3000')
-    cy.request('POST', 'http://localhost:3003/api/testing/reset')
+    cy.visit('')
+    cy.request('POST', `${Cypress.env('BACKEND')}/testing/reset`)
     const user = {
       name: 'Emma Smart',
       username: 'tester',
       password: 'sekret',
     }
-    cy.request('POST', 'http://localhost:3003/api/users', user)
+    cy.request('POST', `${Cypress.env('BACKEND')}/users`, user)
   })
   it('Login form is shown', function () {
     cy.contains('log in').click()
@@ -57,12 +57,20 @@ describe('Blog app', function () {
           url: 'testurl2',
         })
       })
+
       it('a like can be added', function () {
         cy.contains('view').click()
         cy.contains('likes 0')
         cy.contains('like').click()
 
         cy.contains('likes 1')
+      })
+
+      it('a blog can be deleted by the user who created it', function () {
+        cy.contains('view').click()
+        cy.contains('delete').click()
+
+        cy.contains('All about Elvis Elvana').should('not.exist')
       })
     })
   })
