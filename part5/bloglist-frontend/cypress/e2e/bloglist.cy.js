@@ -62,13 +62,13 @@ describe('Blog app', function () {
         cy.createBlog({
           title: 'All about Elvis',
           author: 'Elvana',
-          likes: 0,
+          likes: 2,
           url: 'testurl2',
         })
         cy.createBlog({
           title: 'Top ten mops',
           author: 'Mr Clean',
-          likes: 10,
+          likes: 1,
           url: 'testurl3',
         })
         cy.createBlog({
@@ -80,11 +80,14 @@ describe('Blog app', function () {
       })
 
       it('a like can be added', function () {
-        cy.contains('view').click()
-        cy.contains('likes 0')
-        cy.contains('like').click()
+        cy.contains('All about Elvis Elvana').contains('view').click()
+        cy.contains('likes 2')
+        cy.contains('All about Elvis Elvana')
+          .siblings()
+          .contains('like')
+          .click()
 
-        cy.contains('likes 1')
+        cy.contains('likes 3')
       })
 
       it('a blog can be deleted by the user who created it', function () {
@@ -104,6 +107,17 @@ describe('Blog app', function () {
         cy.login({ username: 'bunty', password: 'bigSekret' })
         cy.contains('view').click()
         cy.contains('delete').should('not.exist')
+      })
+
+      it('blogs are ordered in descending order of likes', function () {
+        cy.get('.blog').eq(0).should('contain', 'How to win the lottery')
+        cy.get('.blog').eq(1).should('contain', 'All about Elvis')
+
+        cy.contains('Top ten mops').contains('view').click()
+        cy.contains('Top ten mops').siblings().contains('like').click()
+        cy.contains('Top ten mops').siblings().contains('like').click()
+
+        cy.get('.blog').eq(1).should('contain', 'Top ten mops')
       })
     })
   })
