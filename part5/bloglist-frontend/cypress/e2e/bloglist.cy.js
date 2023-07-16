@@ -7,7 +7,15 @@ describe('Blog app', function () {
       username: 'tester',
       password: 'sekret',
     }
+
+    const user2 = {
+      name: 'Maureen Blunt',
+      username: 'bunty',
+      password: 'bigSekret',
+    }
+
     cy.request('POST', `${Cypress.env('BACKEND')}/users`, user)
+    cy.request('POST', `${Cypress.env('BACKEND')}/users`, user2)
   })
   it('Login form is shown', function () {
     cy.contains('log in').click()
@@ -71,6 +79,16 @@ describe('Blog app', function () {
         cy.contains('delete').click()
 
         cy.contains('All about Elvis Elvana').should('not.exist')
+      })
+
+      it('only the creator of the blog can see the delete button', function () {
+        cy.contains('view').click()
+        cy.contains('delete')
+
+        cy.contains('logout').click()
+        cy.login({ username: 'bunty', password: 'bigSekret' })
+        cy.contains('view').click()
+        cy.contains('delete').should('not.exist')
       })
     })
   })
