@@ -34,20 +34,36 @@ describe('Blog app', function () {
     })
   })
 
-  describe('When logged in', function () {
+  describe('when logged in', function () {
     beforeEach(function () {
-      cy.contains('log in').click()
-      cy.get('#username').type('tester')
-      cy.get('#password').type('sekret')
-      cy.get('#login-button').click()
+      cy.login({ username: 'tester', password: 'sekret' })
     })
 
-    it('A blog can be created', function () {
+    it('a blog can be created', function () {
+      cy.contains('create new blog').click()
       cy.get('#title-input').type('Tennis tips')
       cy.get('#author-input').type('John McEnroe')
       cy.get('#url-input').type('test-url')
       cy.get('#create').click()
+
       cy.contains('Tennis tips John McEnroe')
+    })
+
+    describe('and a blog exists', function () {
+      beforeEach(function () {
+        cy.createBlog({
+          title: 'All about Elvis',
+          author: 'Elvana',
+          url: 'testurl2',
+        })
+      })
+      it('a like can be added', function () {
+        cy.contains('view').click()
+        cy.contains('likes 0')
+        cy.contains('like').click()
+
+        cy.contains('likes 1')
+      })
     })
   })
 })
