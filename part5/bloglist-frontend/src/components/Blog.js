@@ -32,6 +32,7 @@ const Blog = ({ blog, addLike, removeBlog, user }) => {
     marginBottom: 5,
     backgroundColor: 'lightcyan',
   }
+
   return (
     <div style={blogStyle}>
       <div className="title-author">
@@ -46,8 +47,8 @@ const Blog = ({ blog, addLike, removeBlog, user }) => {
         likes {blog.likes}
         <button onClick={handleClick}>like</button>
         <br />
-        {/* this is the offending line - still */}
-        {/* {blog.user.name} */}
+        {/* this is the line that sometimes seems to cause problems */}
+        {blog.user.name}
         <br />
         {user && user.name === blog.user.name ? (
           <button onClick={handleDelete}>delete</button>

@@ -1,4 +1,4 @@
-describe('Bloglist', function () {
+describe('Blog app', function () {
   beforeEach(function () {
     cy.visit('http://localhost:3000')
     cy.request('POST', 'http://localhost:3003/api/testing/reset')
@@ -31,6 +31,23 @@ describe('Bloglist', function () {
       cy.get('#login-button').click()
 
       cy.contains('wrong username or password')
+    })
+  })
+
+  describe('When logged in', function () {
+    beforeEach(function () {
+      cy.contains('log in').click()
+      cy.get('#username').type('tester')
+      cy.get('#password').type('sekret')
+      cy.get('#login-button').click()
+    })
+
+    it('A blog can be created', function () {
+      cy.get('#title-input').type('Tennis tips')
+      cy.get('#author-input').type('John McEnroe')
+      cy.get('#url-input').type('test-url')
+      cy.get('#create').click()
+      cy.contains('Tennis tips John McEnroe')
     })
   })
 })

@@ -138,13 +138,13 @@ const App = () => {
     <div>
       <h2>blogs</h2>
       <Notification popupMessage={popupMessage} />
+      {user === null ? loginForm() : blogForm()}
       {user && (
         <p>
           {user.name} is logged in
           <button onClick={handleLogout}>logout</button>
         </p>
       )}
-      {user === null ? loginForm() : blogForm()}
 
       <div>
         {likesSortedBlogs.map((blog) => (
