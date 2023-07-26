@@ -62,4 +62,23 @@ describe('unicafe reducer', () => {
       bad: 1,
     });
   });
+
+  test('reset is pressed', () => {
+    const action = {
+      type: 'ZERO',
+    };
+    const state = {
+      good: 2,
+      ok: 1,
+      bad: 3,
+    };
+
+    deepFreeze(state);
+    const newState = counterReducer(state, action);
+    expect(newState).toEqual({
+      good: 0,
+      ok: 0,
+      bad: 0,
+    });
+  });
 });
