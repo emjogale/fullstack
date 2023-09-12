@@ -25,7 +25,6 @@ const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'ADD_VOTE': {
       const id = action.payload.id;
-      console.log('id is', id);
       const anecdoteToChange = state.find((a) => a.id === id);
       const changedAnecdote = {
         ...anecdoteToChange,
@@ -36,7 +35,6 @@ const reducer = (state = initialState, action) => {
     case 'NEW_ANECDOTE': {
       return [...state, action.payload];
     }
-
     default:
       return state;
   }

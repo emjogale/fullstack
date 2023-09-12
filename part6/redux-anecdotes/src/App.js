@@ -16,7 +16,6 @@ const App = () => {
     event.target.anecdote.value = '';
 
     dispatch(createAnecdote(content));
-    console.log('anecdote is', content);
   };
 
   const votesSortedAnecdotes = anecdotes.sort((a, b) => b.votes - a.votes);
