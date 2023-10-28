@@ -1,13 +1,14 @@
 import { useSelector, useDispatch } from 'react-redux';
-
 import { addVote } from '../reducers/anecdoteReducer';
 
 const AnecdoteList = () => {
   const dispatch = useDispatch();
   const anecdotes = useSelector(({ filter, anecdotes }) => {
+    console.log('anecdotes is', anecdotes);
     if (filter === '') {
       return anecdotes;
     } else {
+      console.log('filter is', filter);
       return filter !== ''
         ? anecdotes.filter((anecdote) =>
             anecdote.content.toLowerCase().includes(filter.toLowerCase())

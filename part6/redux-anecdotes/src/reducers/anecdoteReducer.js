@@ -19,7 +19,8 @@ const asObject = (anecdote) => {
 
 const initialState = anecdotesAtStart.map(asObject);
 
-const anecdotereducer = (state = initialState, action) => {
+//To do : change to use createSlice function
+const anecdoteReducer = (state = initialState, action) => {
   switch (action.type) {
     case 'ADD_VOTE': {
       const id = action.payload.id;
@@ -56,4 +57,4 @@ export const createAnecdote = (content) => {
   };
 };
 
-export default anecdotereducer;
+export default anecdoteReducer;
