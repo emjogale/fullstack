@@ -6,7 +6,6 @@ const filterSlice = createSlice({
   reducers: {
     filter(state, action) {
       const filter = action.payload;
-      console.log(JSON.parse(JSON.stringify(state)));
       return filter ? filter : state;
     },
   },
