@@ -8,7 +8,6 @@ const Filter = () => {
     const search = event.target.value;
     console.log('search is ', search);
     dispatch(filter(search));
-    // input-field value is in variable event.target.value
   };
   const style = {
     marginBottom: 10,
