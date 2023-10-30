@@ -36,6 +36,8 @@ const anecdoteSlice = createSlice({
     addVote(state, action) {
       const id = action.payload;
       const anecdoteToChange = state.find((a) => a.id === id);
+      console.log('anecdote to change is', anecdoteToChange);
+      // have a look at why this works and why it doesn't in createNotiofication
       const changedAnecdote = {
         ...anecdoteToChange,
         votes: anecdoteToChange.votes + 1,
