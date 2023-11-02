@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import AnecdoteForm from './components/AndecdoteForm';
 import AnecdoteList from './components/AndecdoteList';
 import Filter from './components/Filter';
@@ -5,7 +6,6 @@ import Notification from './components/Notification';
 import anecdoteService from './services/anecdotes';
 import { setAnecdotes } from './reducers/anecdoteReducer';
 import { useDispatch } from 'react-redux';
-import { useEffect } from 'react';
 
 const App = () => {
   const dispatch = useDispatch();
