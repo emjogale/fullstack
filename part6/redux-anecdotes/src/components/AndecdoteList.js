@@ -30,6 +30,7 @@ const AnecdoteList = () => {
   };
 
   const sortedAnecdotes = [...anecdotes].sort((a, b) => b.votes - a.votes);
+  console.log('sortedAnecdotes are', sortedAnecdotes);
   return (
     <div>
       {sortedAnecdotes.map((anecdote) => (
