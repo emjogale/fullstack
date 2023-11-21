@@ -13,5 +13,14 @@ const createNew = async (content) => {
   return response.data;
 };
 
+const update = async (id) => {
+  const anecdotes = await axios.get(baseUrl);
+  const anecdoteToUpdate = anecdotes.data.find((a) => a.id === id);
+  console.log('anecdote to update is', anecdoteToUpdate);
+  anecdoteToUpdate.votes += 1;
+  const response = await axios.put(`${baseUrl}/${id}`, anecdoteToUpdate);
+  return response.data;
+};
+
 // eslint-disable-next-line
-export default { getAll, createNew };
+export default { getAll, createNew, update };

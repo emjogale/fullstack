@@ -6,7 +6,7 @@ const Filter = () => {
 
   const handleChange = (event) => {
     const search = event.target.value;
-    console.log('search is ', search);
+    // console.log('search is ', search);
     dispatch(filter(search));
   };
   const style = {
