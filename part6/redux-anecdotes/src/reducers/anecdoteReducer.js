@@ -1,7 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import anecdoteService from '../services/anecdotes';
 
-// TODO 6.18 - modify so that voting is saved to the backend
 const anecdoteSlice = createSlice({
   name: 'anecdotes',
   initialState: [],
